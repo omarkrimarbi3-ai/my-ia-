@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دليل أدوات الذكاء الاصطناعي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0e14;
+    --bg-panel: #10151f;
+    --bg-panel-hover: #151b28;
+    --line: #212938;
+    --text: #e8ecf3;
+    --text-dim: #8b96a8;
+    --text-faint: #56617a;
+    --glow: #5eead4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(94,234,212,0.06), transparent 40%),
+      radial-gradient(circle at 90% 85%, rgba(167,139,250,0.05), transparent 45%);
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+  .display{ font-family:'Cairo', sans-serif; }
+
+  /* ---------- layout shells ---------- */
+  .wrap{ max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  header.site{
+    padding: 28px 0 18px;
+    border-bottom: 1px solid var(--line);
+    position: sticky; top:0; z-index:20;
+    background: rgba(10,14,20,0.85);
+    backdrop-filter: blur(10px);
+  }
+  header.site .wrap{ display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .brand{ display:flex; align-items:center; gap:10px; cursor:pointer; }
+  .brand-mark{
+    width: 34px; height: 34px; border-radius: 9px;
+    background: linear-gradient(135deg, #5eead4, #818cf8);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Cairo'; font-weight:900; color:#0a0e14; font-size:16px;
+    flex-shrink:0;
+  }
+  .brand-name{ font-family:'Cairo'; font-weight:800; font-size:17px; letter-spacing:.2px; color: var(--text); }
+  .brand-sub{ font-size:12px; color: var(--text-faint); margin-top:1px; }
+
+  .site-logo{
+    text-align:center;
+    padding: 34px 0 8px;
+  }
+  .site-logo .logo-text{
+    font-family:'Cairo'; font-weight:900;
+    font-size: clamp(30px, 6vw, 46px);
+    letter-spacing: 1px;
+    display:inline-flex; align-items:baseline; gap:2px;
+  }
+  .site-logo .logo-text .my{ color: var(--text); }
+  .site-logo .logo-text .ia{
+    background: linear-gradient(135deg, #5eead4, #818cf8);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .site-logo .logo-under{
+    width: 64px; height: 3px; margin: 10px auto 0;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #5eead4, #818cf8);
+  }
+
+  main{ padding: 44px 0 90px; }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: 30px 0 50px; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12.5px; color: var(--glow); letter-spacing:.4px;
+    border:1px solid rgba(94,234,212,0.25); background: rgba(94,234,212,0.06);
+    padding: 6px 14px; border-radius: 999px; margin-bottom: 20px;
+  }
+  .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background: var(--glow); box-shadow:0 0 8px var(--glow); }
+  h1.hero-title{
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 900;
+    line-height: 1.25;
+    max-width: 800px;
+    margin-bottom: 16px;
+  }
+  h1.hero-title .accent{ color: var(--glow); }
+  .hero-desc{ color: var(--text-dim); font-size: 16px; max-width: 560px; }
+
+  /* ---------- category grid (control deck) ---------- */
+  .deck{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 40px;
+  }
+  @media(min-width: 720px){ .deck{ grid-template-columns: repeat(3, 1fr); } }
+  @media(min-width: 980px){ .deck{ grid-template-columns: repeat(4, 1fr); } }
+
+  .cat-card{
+    position:relative;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 18px;
+    cursor:pointer;
+    text-align: right;
+    display:flex; flex-direction:column; gap: 14px;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    overflow:hidden;
+    color: var(--text);
+    font-family: inherit;
+  }
+  .cat-card::before{
+    content:"";
+    position:absolute; inset:0;
+    background: radial-gradient(120px 80px at 85% 0%, var(--cc, #5eead4) 0%, transparent 70%);
+    opacity: 0; transition: opacity .25s ease;
+  }
+  .cat-card:hover, .cat-card:focus-visible{
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--cc, #5eead4) 55%, var(--line));
+    background: var(--bg-panel-hover);
+    outline:none;
+  }
+  .cat-card:hover::before, .cat-card:focus-visible::before{ opacity: .14; }
+  .cat-card:focus-visible{ box-shadow: 0 0 0 2px var(--cc, #5eead4); }
+
+  .cat-icon{
+    width: 42px; height:42px; border-radius: 10px;
+    display:flex; align-items:center; justify-content:center;
+    background: color-mix(in srgb, var(--cc, #5eead4) 16%, transparent);
+    color: var(--cc, #5eead4);
+    flex-shrink:0;
+  }
+  .cat-icon svg{ width:22px; height:22px; }
+  .cat-name{ font-family:'Cairo'; font-weight:700; font-size: 15.5px; z-index:1; color: var(--text); }
+  .cat-count{ font-size: 12px; color: var(--text-faint); z-index:1; }
+
+  /* ---------- detail view ---------- */
+  .view{ display:none; }
+  .view.active{ display:block; animation: fadeUp .35s ease; }
+  @keyframes fadeUp{ from{opacity:0; transform: translateY(10px);} to{opacity:1; transform:none;} }
+
+  .back-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    background:none; border:1px solid var(--line); color: var(--text-dim);
+    padding: 9px 16px; border-radius:999px; font-family:'Tajawal'; font-size:13.5px;
+    cursor:pointer; margin-bottom: 30px; transition: all .15s ease;
+  }
+  .back-btn:hover{ border-color: var(--text-dim); color: var(--text); }
+  .back-btn svg{ width:15px; height:15px; }
+
+  .cat-header{ display:flex; align-items:center; gap:16px; margin-bottom: 8px; }
+  .cat-header .cat-icon{ width:54px; height:54px; }
+  .cat-header .cat-icon svg{ width:28px; height:28px; }
+  .cat-title{ font-family:'Cairo'; font-weight:900; font-size: clamp(22px,3.4vw,30px); }
+  .cat-tagline{ color: var(--text-dim); margin: 14px 0 36px; max-width: 620px; font-size:15px; }
+
+  .tool-list{ display:flex; flex-direction:column; gap: 14px; }
+  .tool-card{
+    display:flex; gap: 18px; align-items:flex-start;
+    background: var(--bg-panel);
+    border:1px solid var(--line); border-radius: 14px;
+    padding: 20px;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .tool-card:hover{ border-color: color-mix(in srgb, var(--cc, #5eead4) 45%, var(--line)); background: var(--bg-panel-hover); }
+  .tool-badge{
+    flex-shrink:0; width: 40px; height:40px; border-radius:10px;
+    background: color-mix(in srgb, var(--cc, #5eead4) 14%, transparent);
+    color: var(--cc, #5eead4);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Cairo'; font-weight:800; font-size: 16px;
+    overflow:hidden;
+  }
+  .tool-badge img{ width:22px; height:22px; object-fit:contain; }
+  .tool-body{ flex:1; min-width:0; }
+  .tool-name-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .tool-name{ font-family:'Cairo'; font-weight:700; font-size: 16.5px; }
+  .tool-link{
+    font-size:12.5px; color: var(--cc, #5eead4); text-decoration:none;
+    border:1px solid color-mix(in srgb, var(--cc, #5eead4) 40%, transparent);
+    padding: 5px 12px; border-radius:999px; white-space:nowrap;
+    transition: background .15s ease;
+  }
+  .tool-link:hover{ background: color-mix(in srgb, var(--cc, #5eead4) 12%, transparent); }
+  .tool-desc{ color: var(--text-dim); font-size: 14.5px; margin-top: 6px; }
+  .tool-best{ margin-top: 10px; font-size: 13.5px; color: var(--text); background: rgba(255,255,255,0.03); border-right: 2px solid var(--cc, #5eead4); padding: 8px 12px; border-radius: 6px; }
+  .tool-best b{ color: var(--cc, #5eead4); font-weight:700; }
+
+  footer{
+    border-top: 1px solid var(--line);
+    padding: 26px 0; text-align:center;
+    color: var(--text-faint); font-size: 12.5px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="brand" onclick="showHome()" tabindex="0" role="button" aria-label="الرئيسية">
+      <div class="brand-mark">ذ</div>
+      <div>
+        <div class="brand-name">دليل أدوات الذكاء الاصطناعي</div>
+        <div class="brand-sub">اختر استخدامك، والأدوات المناسبة أمامك</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="site-logo">
+  <span class="logo-text"><span class="my">my</span><span class="ia">iA</span></span>
+  <div class="logo-under"></div>
+</div>
+
+<main class="wrap">
+
+  <!-- HOME VIEW -->
+  <section id="view-home" class="view active">
+    <div class="hero">
+      <span class="eyebrow"><span class="dot"></span> عشرة تصنيفات، أدوات حقيقية مجرَّبة</span>
+      <h1 class="hero-title">اختر <span class="accent">استخدامك</span>، ونعرض لك أفضل أدوات الذكاء الاصطناعي المناسبة له</h1>
+      <p class="hero-desc">اضغط على أي مربع بالأسفل للانتقال لصفحته، وفيها قائمة بأبرز الأدوات مع وصف مختصر وأفضل استخدام لكل واحدة.</p>
+    </div>
+
+    <div class="deck" id="deck"></div>
+  </section>
+
+  <!-- DETAIL VIEWS get injected here -->
+  <div id="detail-views"></div>
+
+</main>
+
+<footer>
+  دليل أدوات الذكاء الاصطناعي — للتعرّف والاستكشاف فقط، الأسماء والعلامات التجارية ملك لأصحابها
+</footer>
+
+<script>
+const ICONS = {
+  writing: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M14 6l4 4"/></svg>`,
+  image: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M20 16l-5-5-3.5 3.5L9 12l-5.5 5.5"/></svg>`,
+  video: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5.5" width="13" height="13" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg>`,
+  code: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8.5 8L4.5 12l4 4"/><path d="M15.5 8l4 4-4 4"/><path d="M13 5l-2 14"/></svg>`,
+  audio: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11v2M7 8v8M11 5v14M15 8v8M19 11v2"/></svg>`,
+  research: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-5-5"/></svg>`,
+  productivity: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 3L4 14h6l-1 7 9-11h-6l1-7z"/></svg>`,
+  translate: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.2 2.3 3.4 5.3 3.4 8.5s-1.2 6.2-3.4 8.5c-2.2-2.3-3.4-5.3-3.4-8.5S9.8 5.8 12 3.5z"/></svg>`,
+  education: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8l9-4.5L21 8l-9 4.5L3 8z"/><path d="M7 10.3V16c0 1 2.2 2.5 5 2.5s5-1.5 5-2.5v-5.7"/></svg>`,
+  automation: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="2.8"/><path d="M19.4 13.5a7.7 7.7 0 0 0 0-3L21 9l-2-3.4-1.9.8a7.6 7.6 0 0 0-2.6-1.5L14 3h-4l-.5 2a7.6 7.6 0 0 0-2.6 1.5l-1.9-.8L3 9l1.6 1.5a7.7 7.7 0 0 0 0 3L3 15l2 3.4 1.9-.8a7.6 7.6 0 0 0 2.6 1.5l.5 2h4l.5-2a7.6 7.6 0 0 0 2.6-1.5l1.9.8L21 15l-1.6-1.5z"/></svg>`,
+};
+
+const CATS = [
+  {
+    id: "writing", color: "#5eead4", icon: "writing",
+    name: "الكتابة والمحادثة",
+    tagline: "مساعدون يكتبون معك: مقالات، إيميلات، ملخصات، وحوار طبيعي للإجابة على أي سؤال.",
+    tools: [
+      {name:"ChatGPT", desc:"مساعد محادثة عام من OpenAI، قوي في الكتابة والشرح والعصف الذهني وصياغة أي نص تقريبًا.", best:"صياغة المسودات الأولى والأفكار السريعة", link:"https://chat.openai.com"},
+      {name:"Claude", desc:"مساعد من Anthropic يتميز بأسلوب كتابة طبيعي ودقة في المهام الطويلة والتحليل المتأني.", best:"كتابة نصوص طويلة ومنظمة تحتاج دقة", link:"https://claude.ai"},
+      {name:"Gemini", desc:"مساعد جوجل، مندمج بعمق مع Gmail وMaps ومنتجات جوجل الأخرى.", best:"مهام مرتبطة بخدمات جوجل والبحث الفوري", link:"https://gemini.google.com"},
+      {name:"DeepSeek", desc:"نموذج محادثة قوي بالتحليل والاستدلال المنطقي مع أداء ممتاز مقابل تكلفته.", best:"المهام التي تحتاج تفكيرًا منطقيًا متعدد الخطوات", link:"https://www.deepseek.com"},
+      {name:"Grammarly", desc:"مدقق كتابة ذكي يصحح القواعد والأسلوب أثناء الكتابة في أي مكان بالمتصفح.", best:"تدقيق الإيميلات والنصوص الإنجليزية قبل الإرسال", link:"https://www.grammarly.com"},
+    ]
+  },
+  {
+    id: "image", color: "#a78bfa", icon: "image",
+    name: "توليد الصور والتصميم",
+    tagline: "من وصف نصي بسيط إلى صورة أو تصميم جاهز، أو تعديل صور موجودة بذكاء.",
+    tools: [
+      {name:"Midjourney", desc:"من أقوى أدوات توليد الصور فنيًا، معروف بجودة الإضاءة والتكوين البصري.", best:"صور فنية وإبداعية عالية الجودة", link:"https://www.midjourney.com"},
+      {name:"DALL·E (GPT Image)", desc:"توليد صور من نص داخل ChatGPT مباشرة، مع فهم دقيق للتفاصيل المطلوبة بالوصف.", best:"صور توضيحية دقيقة حسب وصف تفصيلي", link:"https://openai.com/index/dall-e-3"},
+      {name:"Stable Diffusion", desc:"نموذج مفتوح المصدر يمكن تشغيله محليًا والتحكم الكامل في إعداداته.", best:"تخصيص كامل للتوليد وتدريب نماذج خاصة", link:"https://stability.ai"},
+      {name:"Adobe Firefly", desc:"أداة أدوبي لتوليد وتعديل الصور، مدمجة مباشرة داخل فوتوشوب.", best:"تعديل صور احترافية داخل مشاريع أدوبي", link:"https://firefly.adobe.com"},
+      {name:"Canva AI", desc:"يضيف توليد الصور والتصاميم الجاهزة داخل محرر كانفا السهل.", best:"تصاميم سريعة لمنشورات السوشال ميديا", link:"https://www.canva.com/ai-image-generator"},
+    ]
+  },
+  {
+    id: "video", color: "#fb923c", icon: "video",
+    name: "إنتاج الفيديو",
+    tagline: "توليد مقاطع فيديو من نص أو صورة، وتحرير فيديو بمساعدة الذكاء الاصطناعي.",
+    tools: [
+      {name:"Runway", desc:"من رواد توليد الفيديو بالذكاء الاصطناعي، يدعم التحويل من نص وصورة إلى فيديو.", best:"مقاطع فيديو قصيرة إبداعية وتجريبية", link:"https://runwayml.com"},
+      {name:"Sora", desc:"نموذج OpenAI لتوليد فيديو واقعي وطويل نسبيًا من وصف نصي.", best:"مشاهد فيديو واقعية بجودة سينمائية", link:"https://openai.com/sora"},
+      {name:"Pika", desc:"أداة سهلة لتحويل الصور والنصوص إلى فيديوهات قصيرة بلمسات إبداعية.", best:"فيديوهات قصيرة سريعة للسوشال ميديا", link:"https://pika.art"},
+      {name:"CapCut AI", desc:"محرر فيديو شهير يضيف أدوات ذكاء اصطناعي مثل الترجمة التلقائية والقص الذكي.", best:"تحرير ونشر فيديوهات تيك توك وريلز بسرعة", link:"https://www.capcut.com"},
+      {name:"HeyGen", desc:"يولّد فيديوهات بشخصيات رقمية ناطقة (أفاتار) من نص فقط.", best:"فيديوهات تعليمية أو تسويقية بمذيع افتراضي", link:"https://www.heygen.com"},
+    ]
+  },
+  {
+    id: "code", color: "#60a5fa", icon: "code",
+    name: "البرمجة",
+    tagline: "مساعدون يكتبون الكود معك، يشرحونه، ويصححون الأخطاء داخل بيئة التطوير.",
+    tools: [
+      {name:"GitHub Copilot", desc:"مساعد برمجة مدمج داخل محررات الأكواد الشهيرة، يقترح أسطر وأكواد كاملة أثناء الكتابة.", best:"إكمال تلقائي للكود داخل VS Code وغيره", link:"https://github.com/features/copilot"},
+      {name:"Cursor", desc:"محرر أكواد مبني بالكامل حول الذكاء الاصطناعي، يفهم المشروع كاملًا لا سطر واحد فقط.", best:"تعديل ملفات متعددة ومشاريع كبيرة", link:"https://cursor.com"},
+      {name:"Claude Code", desc:"أداة سطر أوامر تفوّض لها مهام برمجية كاملة كإصلاح أخطاء أو بناء ميزة جديدة.", best:"تنفيذ مهام برمجية معقدة بشكل شبه مستقل", link:"https://claude.com/claude-code"},
+      {name:"Replit AI", desc:"بيئة تطوير في المتصفح مع مساعد ذكاء اصطناعي يبني تطبيقات من وصف بسيط.", best:"بناء تطبيقات صغيرة سريعًا بدون إعداد بيئة", link:"https://replit.com"},
+      {name:"Tabnine", desc:"مساعد إكمال أكواد يركّز على الخصوصية وإمكانية التشغيل داخل شبكة الشركة.", best:"فرق برمجية تحتاج خصوصية عالية للكود", link:"https://www.tabnine.com"},
+    ]
+  },
+  {
+    id: "audio", color: "#f472b6", icon: "audio",
+    name: "الصوت والموسيقى",
+    tagline: "تحويل النص إلى صوت طبيعي، استنساخ الأصوات، وتأليف موسيقى كاملة تلقائيًا.",
+    tools: [
+      {name:"ElevenLabs", desc:"من أدق أدوات تحويل النص إلى صوت بشري الطابع، ويدعم استنساخ الصوت.", best:"تعليق صوتي احترافي لفيديوهات وبودكاست", link:"https://elevenlabs.io"},
+      {name:"Suno", desc:"يؤلف أغاني كاملة بكلمات ولحن وغناء من وصف نصي بسيط.", best:"إنشاء أغاني أصلية دون خبرة موسيقية", link:"https://suno.com"},
+      {name:"Udio", desc:"منافس قوي لسونو في توليد الموسيقى بجودة صوت عالية وتنوع بالأنماط.", best:"تجربة أنماط موسيقية متعددة بسرعة", link:"https://www.udio.com"},
+      {name:"Whisper", desc:"نموذج OpenAI لتحويل الصوت إلى نص بدقة عالية ودعم للعربية.", best:"تفريغ نصي دقيق لتسجيلات ومقابلات", link:"https://openai.com/research/whisper"},
+      {name:"Murf AI", desc:"استوديو صوتي يحوّل النص لتعليق صوتي احترافي بعشرات اللهجات.", best:"تعليقات صوتية لعروض تقديمية وإعلانات", link:"https://murf.ai"},
+    ]
+  },
+  {
+    id: "research", color: "#34d399", icon: "research",
+    name: "البحث والتحليل",
+    tagline: "بحث ذكي بمصادر موثوقة، وتحليل بيانات وأرقام بدل التصفح اليدوي الطويل.",
+    tools: [
+      {name:"Perplexity", desc:"محرك بحث بالذكاء الاصطناعي يجاوب مباشرة مع ذكر المصادر بدل قوائم روابط.", best:"إجابات سريعة موثّقة بمصادر واضحة", link:"https://www.perplexity.ai"},
+      {name:"Microsoft Copilot", desc:"مساعد بحث وإنتاجية مدمج في Bing وWindows وتطبيقات مايكروسوفت.", best:"بحث ومهام يومية داخل بيئة ويندوز وأوفيس", link:"https://copilot.microsoft.com"},
+      {name:"Elicit", desc:"أداة متخصصة بالبحث العلمي، تلخص وتقارن الأوراق الأكاديمية تلقائيًا.", best:"مراجعة أدبيات علمية وأبحاث أكاديمية", link:"https://elicit.com"},
+      {name:"Wolfram Alpha", desc:"محرك حساب معرفي يجيب على أسئلة رياضية وعلمية بحسابات دقيقة، لا تخمين.", best:"حسابات رياضية وعلمية دقيقة وموثوقة", link:"https://www.wolframalpha.com"},
+      {name:"NotebookLM", desc:"يبني قاعدة معرفة من مستنداتك الخاصة ويجيب بالاعتماد عليها فقط.", best:"البحث داخل مستنداتك ومصادرك الخاصة", link:"https://notebooklm.google"},
+    ]
+  },
+  {
+    id: "productivity", color: "#fbbf24", icon: "productivity",
+    name: "الإنتاجية والعروض التقديمية",
+    tagline: "تنظيم المهام والملاحظات، وبناء عروض تقديمية جاهزة تلقائيًا.",
+    tools: [
+      {name:"Notion AI", desc:"يضيف كتابة وتلخيص وتنظيم تلقائي للملاحظات داخل مساحة نوشن.", best:"تلخيص اجتماعات وتنظيم قواعد معرفة", link:"https://www.notion.so/product/ai"},
+      {name:"Gamma", desc:"يحوّل فكرة أو نصًا إلى عرض تقديمي مصمم بالكامل خلال دقائق.", best:"عروض تقديمية جاهزة بدون تصميم يدوي", link:"https://gamma.app"},
+      {name:"Beautiful.ai", desc:"محرر عروض تقديمية يعيد ترتيب العناصر تلقائيًا بتصميم متوازن.", best:"عروض شركات منظمة بمعايير تصميم ثابتة", link:"https://www.beautiful.ai"},
+      {name:"ClickUp AI", desc:"مساعد ذكاء اصطناعي داخل أداة إدارة المشاريع كليك أب لصياغة المهام والتقارير.", best:"إدارة مهام الفريق وتقارير التقدم", link:"https://clickup.com/ai"},
+      {name:"Otter.ai", desc:"يسجل الاجتماعات ويكتب محضرًا وملخصًا تلقائيًا بالمهام المطلوبة.", best:"محاضر اجتماعات ونقاط عمل تلقائية", link:"https://otter.ai"},
+    ]
+  },
+  {
+    id: "translate", color: "#38bdf8", icon: "translate",
+    name: "الترجمة",
+    tagline: "ترجمة فورية بين اللغات بدقة أعلى من الترجمة الحرفية التقليدية.",
+    tools: [
+      {name:"DeepL", desc:"يشتهر بترجمة تحافظ على السياق والأسلوب أفضل من كثير من المنافسين.", best:"ترجمة نصوص ومستندات رسمية بدقة عالية", link:"https://www.deepl.com"},
+      {name:"Google Translate", desc:"أوسع أدوات الترجمة انتشارًا، يدعم عددًا ضخمًا من اللغات والصيغ.", best:"ترجمة سريعة يومية بين لغات كثيرة", link:"https://translate.google.com"},
+      {name:"Microsoft Translator", desc:"ترجمة نصوص ومحادثات مباشرة، مدمجة داخل تطبيقات مايكروسوفت.", best:"ترجمة اجتماعات ومحادثات فورية", link:"https://www.microsoft.com/translator"},
+      {name:"ChatGPT للترجمة", desc:"يترجم مع مراعاة السياق والنبرة، ويشرح تعبيرات صعبة عند الطلب.", best:"ترجمة نصوص تحتاج شرحًا للسياق الثقافي", link:"https://chat.openai.com"},
+      {name:"Papago", desc:"أداة نيفر الكورية، تتفوق في دقة الترجمة للغات الآسيوية تحديدًا.", best:"ترجمة دقيقة من وإلى الكورية واليابانية", link:"https://papago.naver.com"},
+    ]
+  },
+  {
+    id: "education", color: "#c084fc", icon: "education",
+    name: "التعليم والتلخيص",
+    tagline: "تلخيص مستندات طويلة، وشرح المفاهيم الصعبة، ومساعدة بالمذاكرة.",
+    tools: [
+      {name:"NotebookLM", desc:"يرفع له الطالب مصادره الدراسية ليجيب ويلخّص بالاعتماد عليها فقط.", best:"مذاكرة من مصادر ومحاضرات محددة", link:"https://notebooklm.google"},
+      {name:"ChatGPT للتعليم", desc:"يشرح أي مفهوم بأسلوب مبسّط تدريجيًا حسب مستوى فهم الطالب.", best:"شرح مفاهيم صعبة خطوة بخطوة", link:"https://chat.openai.com"},
+      {name:"Quizlet AI", desc:"يحوّل ملاحظاتك تلقائيًا إلى بطاقات تعليمية واختبارات تدريبية.", best:"مراجعة سريعة قبل الامتحانات ببطاقات تعليمية", link:"https://quizlet.com"},
+      {name:"Khanmigo", desc:"مرشد تعليمي من أكاديمية خان يوجّه الطالب للحل بدل إعطائه الإجابة مباشرة.", best:"تعلّم تدريجي موجّه بدل الحفظ المباشر", link:"https://www.khanacademy.org/khan-labs"},
+      {name:"Otter.ai", desc:"يسجل المحاضرات ويحوّلها لنص مكتوب وملخص نقاط رئيسية.", best:"تفريغ المحاضرات وملخصاتها بعد الحصة", link:"https://otter.ai"},
+    ]
+  },
+  {
+    id: "automation", color: "#f87171", icon: "automation",
+    name: "الأتمتة",
+    tagline: "ربط التطبيقات ببعضها وتنفيذ مهام متكررة تلقائيًا بدون تدخل يدوي.",
+    tools: [
+      {name:"Zapier", desc:"يربط آلاف التطبيقات ببعضها وينفّذ سلاسل مهام تلقائية عند حدوث شرط معيّن.", best:"أتمتة مهام متكررة بين أدوات مختلفة", link:"https://zapier.com"},
+      {name:"Make", desc:"بديل بصري لزابيير، يبني مسارات أتمتة معقدة بسحب وإفلات العناصر.", best:"أتمتة متعددة الخطوات بتحكم بصري دقيق", link:"https://www.make.com"},
+      {name:"n8n", desc:"أداة أتمتة مفتوحة المصدر يمكن استضافتها ذاتيًا للتحكم الكامل بالبيانات.", best:"أتمتة تحتاج خصوصية وتحكم تقني كامل", link:"https://n8n.io"},
+      {name:"Power Automate", desc:"أداة أتمتة مايكروسوفت المدمجة مع أوفيس وويندوز والخدمات السحابية.", best:"أتمتة عمليات داخل بيئة عمل شركات مايكروسوفت", link:"https://www.microsoft.com/power-platform/products/power-automate"},
+      {name:"IFTTT", desc:"أبسط أدوات الأتمتة، مثالية لربط تطبيقات الهاتف والأجهزة الذكية بالمنزل.", best:"أتمتة بسيطة للأجهزة الذكية والهاتف", link:"https://ifttt.com"},
+    ]
+  },
+];
+
+const deck = document.getElementById('deck');
+const detailContainer = document.getElementById('detail-views');
+
+CATS.forEach(cat => {
+  const card = document.createElement('button');
+  card.className = 'cat-card';
+  card.style.setProperty('--cc', cat.color);
+  card.setAttribute('onclick', `showCat('${cat.id}')`);
+  card.innerHTML = `
+    <div class="cat-icon">${ICONS[cat.icon]}</div>
+    <div>
+      <div class="cat-name">${cat.name}</div>
+      <div class="cat-count">${cat.tools.length} أدوات مختارة</div>
+    </div>
+  `;
+  deck.appendChild(card);
+
+  const view = document.createElement('section');
+  view.className = 'view';
+  view.id = `view-${cat.id}`;
+  view.innerHTML = `
+    <button class="back-btn" onclick="showHome()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 6l-8 6 8 6"/></svg>
+      رجوع للتصنيفات
+    </button>
+    <div class="cat-header">
+      <div class="cat-icon" style="--cc:${cat.color}">${ICONS[cat.icon]}</div>
+      <div class="cat-title">${cat.name}</div>
+    </div>
+    <p class="cat-tagline">${cat.tagline}</p>
+    <div class="tool-list">
+      ${cat.tools.map(t => `
+        <div class="tool-card" style="--cc:${cat.color}">
+          <div class="tool-badge">
+            <img src="https://www.google.com/s2/favicons?domain=${new URL(t.link).hostname}&sz=128"
+                 alt="${t.name}"
+                 onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${t.name.charAt(0)}'}))">
+          </div>
+          <div class="tool-body">
+            <div class="tool-name-row">
+              <div class="tool-name">${t.name}</div>
+              <a class="tool-link" href="${t.link}" target="_blank" rel="noopener">فتح الموقع ↗</a>
+            </div>
+            <div class="tool-desc">${t.desc}</div>
+            <div class="tool-best"><b>أفضل استخدام:</b> ${t.best}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  detailContainer.appendChild(view);
+});
+
+function showHome(){
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-home').classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+  history.replaceState(null, '', '#home');
+}
+function showCat(id){
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(`view-${id}`).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+  history.replaceState(null, '', `#${id}`);
+}
+
+// support direct linking via hash
+window.addEventListener('DOMContentLoaded', () => {
+  const hash = location.hash.replace('#','');
+  if(hash && document.getElementById(`view-${hash}`)) showCat(hash);
+});
+</script>
+</body>
+</html>
